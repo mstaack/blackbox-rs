@@ -1,0 +1,35 @@
+[package]
+name = "blackbox-rs"
+version = "0.1.0"
+edition = "2021"
+description = "Embassy-based board support crate for the Blackbox board (STM32H743XI): clocks, SDRAM, LTDC display, LEDs, buttons, encoders, GT9147 touch and CS42528 audio."
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/mstaack/blackbox-rs"
+documentation = "https://docs.rs/blackbox-rs"
+readme = "README.md"
+keywords = ["embedded", "no-std", "stm32h7", "bsp", "embassy"]
+categories = ["embedded", "no-std", "hardware-support"]
+exclude = ["docs/", ".cargo/"]
+
+[dependencies]
+embassy-stm32 = { version = "0.6", features = ["stm32h743xi", "memory-x", "time-driver-any", "unstable-pac", "defmt"] }
+embassy-time = { version = "0.5", features = ["defmt"] }
+
+cortex-m = { version = "0.7", features = ["critical-section-single-core"] }
+stm32-fmc = "0.4"   # SdramChip trait for the IS42S16160J (matches embassy-stm32's version)
+embedded-hal = "1"  # DelayNs that Sdram::init wants
+libm = "0.2"          # atan2 for endless-encoder angle recovery
+embedded-graphics = "0.8"  # debug-screen text + primitives
+defmt = "1"
+
+# Example-only (debug_screen): binary entry point, logging transport and panic handler.
+[dev-dependencies]
+embassy-executor = { version = "0.10", features = ["platform-cortex-m", "executor-thread", "defmt"] }
+cortex-m-rt = "0.7"
+heapless = "0.8"      # stack String for formatting numbers into labels
+defmt-rtt = "1"
+panic-probe = { version = "1", features = ["print-defmt"] }
+
+[profile.release]
+debug = 2          # keep symbols for probe-rs/defmt
+opt-level = "s"

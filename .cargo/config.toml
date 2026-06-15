@@ -1,0 +1,13 @@
+[build]
+target = "thumbv7em-none-eabihf"   # Cortex-M7F
+
+[target.thumbv7em-none-eabihf]
+runner = "probe-rs run --chip STM32H743XI"
+rustflags = [
+  "-C", "link-arg=--nmagic",
+  "-C", "link-arg=-Tlink.x",
+  "-C", "link-arg=-Tdefmt.x",
+]
+
+[env]
+DEFMT_LOG = "info"
